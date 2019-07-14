@@ -58,7 +58,10 @@ if __name__ == '__main__':
 
     psnrs = np.zeros((opt.how_many, N))
 
-    bar = pb.ProgressBar(max_value=opt.how_many)
+    #bar = pb.ProgressBar(max_value=opt.how_many)
+    bar = pb.ProgressBar(maxval=opt.how_many)
+    bar.start()
+
     for i, data_raw in enumerate(dataset_loader):
         data_raw[0] = data_raw[0].cuda()
         data_raw[0] = util.crop_mult(data_raw[0], mult=8)
@@ -85,12 +88,13 @@ if __name__ == '__main__':
     np.save('./checkpoints/%s/psnrs_mean_%s' % (opt.name,str_now), psnrs_mean)
     np.save('./checkpoints/%s/psnrs_std_%s' % (opt.name,str_now), psnrs_std)
     np.save('./checkpoints/%s/psnrs_%s' % (opt.name,str_now), psnrs)
-    print(', ').join(['%.2f' % psnr for psnr in psnrs_mean])
+    #print(', ').join(['%.2f' % psnr for psnr in psnrs_mean])
+    print(', '.join(['%.2f' % psnr for psnr in psnrs_mean]))
 
     old_results = np.load('./resources/psnrs_siggraph.npy')
     old_mean = np.mean(old_results, axis=0)
     old_std = np.std(old_results, axis=0) / np.sqrt(old_results.shape[0])
-    print(', ').join(['%.2f' % psnr for psnr in old_mean])
+    print(', '.join(['%.2f' % psnr for psnr in old_mean]))
 
     num_points_hack = 1. * num_points
     num_points_hack[0] = .4
